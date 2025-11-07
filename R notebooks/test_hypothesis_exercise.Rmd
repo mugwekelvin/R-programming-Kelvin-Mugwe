@@ -1,0 +1,78 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Hypothesis Testing
+
+1.  T-testing
+
+    $$
+    \displaystyle T_{calc} \quad = \quad \dfrac{x -\mu_{0}}{\frac{s}{\sqrt{n}}}
+    $$
+
+    Exercise
+
+    ```{r}
+    library(MASS)
+    data(anorexia)
+    ```
+
+```{r}
+print(anorexia)
+```
+
+Statement of Hypothesis
+
+$H_{0} : \mu_{d} \quad = \quad 0 \quad v/s \quad H_{1} : \mu{d} > 0$
+
+```{r}
+t.test(x = anorexia$Prewt , y == anorexia$Postwt , paired = TRUE , conf.level = 0.95,alternative = "greater")
+
+```
+
+Our p-value is less than our $\alpha = 0.05$ hence there is a significant difference between the two variables hence we fail to reject the alternative hypothesis. With sufficient evidence we can conclude that there is no siginficant different difference.
+
+Example 2
+
+```{r}
+print(PlantGrowth)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+PlantGrowth %>% 
+  group_by(group) %>% 
+  summarise(mean_per_group = mean(weight))
+```
+
+Statement of Hypothesis
+
+$H_{0} : \mu_{1} = \mu_{2} = \mu_{3} \quad H_{1}: \mu_{1} \neq \mu{2} \neq \mu{3}$
+
+First let's test fo pooled variance where the larger standard deviation divided by the lower standard deviation should be less than 2
+
+```{r}
+PlantGrowth %>% 
+  group_by(group) %>% 
+  summarise(std_weight = sd(weight))
+```
+
+Upon division
+
+```{r}
+0.7936757/0.4425733
+```
+
+The standard deviation is less than 2 hence we can now change our hypothesis to be the test for variances
+
+$H_{0} : \quad \sigma_{1}^{2} = \sigma_{2}^{2} = \sigma_{3}^{3} \quad v/s \quad  H_{1}: \sigma_{1}^{2} \neq \sigma_{2}^{2} \neq \sigma_{3}^{2}$
+
+```{r}
+t.test(x = PlantGrowth$weight & PlantGrowth$group == 'ctrl',y = PlantGrowth$weight & PlantGrowth$group == 'trtl'| PlantGrowth$group == 'trt2',alternative = "two.sided",conf.level = 0.95,var.equal = TRUE)
+```
+
+Our p-value is 1 which is far greater than our level of significance implying there is no difference in the variances hence there is sufficient evidence to support our assrtion that there is no difference in variances between the test groups and the control group.

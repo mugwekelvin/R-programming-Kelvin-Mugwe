@@ -1,0 +1,115 @@
+---
+title: "Data Summary"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+
+```
+
+```{r}
+data("msleep")
+glimpse(msleep)
+```
+
+To describe the range,centrality and variance of the data
+
+```{r}
+min(msleep$awake)
+max(msleep$awake)
+mean(msleep$awake)
+median(msleep$awake)
+var(msleep$awake)
+IQR(msleep$awake)
+```
+
+The box plot can be used to confirm the median of the points
+
+```{r}
+ggplot(msleep,aes(x=msleep$awake))+
+  geom_boxplot(color="brown",fill="white")+
+  theme_bw()
+
+```
+
+To get the whole summary of your data
+
+```{r}
+summary(msleep)
+
+```
+
+To get a summary of only two varaibles
+
+```{r}
+msleep %>% 
+  select(brainwt,bodywt) %>% 
+  summary()
+
+```
+
+For the category vore we are supposed to generate a table summary
+
+First let's select the variables sleep_total and vore
+
+```{r}
+vore_data <- msleep %>% 
+  select(vore,sleep_total) %>% 
+  drop_na() %>% 
+  print()
+
+```
+
+Now for each category we need to find a summary in terms of a table
+
+```{r}
+vore_data %>% 
+  group_by(vore) %>% 
+  summarise(sleeping_total=sum(sleep_total),average_total = mean(sleep_total),max_sleep=max(sleep_total),min_sleep=min(sleep_total)) %>% 
+  arrange(-average_total)
+```
+
+Creating contingency table
+
+```{r}
+library(MASS)
+
+```
+
+Now using the Cars93 dataset
+
+```{r}
+data("Cars93")
+glimpse(Cars93)
+attach(Cars93)
+
+```
+
+Creating a table summary for Airbags and Origin
+
+```{r}
+table(AirBags,Origin)
+
+```
+
+To create row and column totals to the table
+
+```{r}
+addmargins(table(AirBags,Origin))
+
+```
+
+To get the proportion of our observations
+
+```{r}
+prop.table(table(AirBags,Origin))*100
+
+```
+
+To get the row observations per each category
+
+```{r}
+prop.table(table(AirBags,Origin),1)*100
+
+```

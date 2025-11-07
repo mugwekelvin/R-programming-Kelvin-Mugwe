@@ -1,0 +1,100 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library('tidyverse')
+library('gtExtras')
+```
+
+```{r}
+library('GWalkR')
+GWalkR(iris)
+```
+
+```{r}
+library('caret')
+set.seed(123)
+trainIndex <- createDataPartition(iris$Species,p=0.8,list= FALSE)
+train_data <- iris[trainIndex, ]
+test <- iris[-trainIndex, ]
+
+```
+
+```{r}
+nrow(train_data)
+```
+
+```{r}
+nrow(test)
+```
+
+## Decision Trees
+
+```{r}
+dt_model <- train(Species ~ .,data = train_data, method = "rpart")
+#printing the model
+print(dt_model)
+#make predictions
+dt_predictions <- predict(dt_model,test)
+#Model Evaluation
+confusionMatrix(dt_predictions,test$Species)
+```
+
+## Random Forest
+
+```{r}
+#Training a Random Forest Model
+rf_model <- train(Species ~ .,data = train_data,method="rf")
+#printing our model
+print(rf_model)
+#predicting data using our model
+rf_prediction <- predict(rf_model,test)
+#Model Evaluation
+confusionMatrix(rf_prediction,test$Species)
+
+```
+
+### Support Vector Machine
+
+```{r}
+svm_model <- train(Species ~.,data=train_data,method="svmRadial")
+#printing the model
+print(svm_model)
+#predicting our test data
+rf_prediction <- predict(svm_model,test)
+# Model Evaluation using the Confusion Matrix
+confusionMatrix(rf_prediction,test$Species)
+```
+
+### HyperParameter Tuning for Random Forest
+
+```{r}
+rf_grid <- expand.grid(mtry=c(2,3,4))
+rf_model_tuned <- train(Species ~.,data= train_data,method="rf",tuneGrid=rf_grid)
+#printing our model
+print(rf_model_tuned)
+#predicting our test data
+rf_tuned_prediction <- predict(rf_model_tuned,test)
+#Model evaluation using the Confusion Matrix
+confusionMatrix(test$Species,rf_tuned_prediction)
+```
+
+```{r}
+library(rpart.plot)
+rpart.plot(dt_model$finalModel)
+```
+
+```{r}
+library("randomForest")
+varImpPlot(rf_model_tuned$finalModel)
+```
+
+```{r}
+library("rpart")
+```
+
+```{r}
+plot(dt_model$finalModel)
+```

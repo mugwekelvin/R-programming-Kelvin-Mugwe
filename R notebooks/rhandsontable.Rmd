@@ -1,0 +1,77 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(rhandsontable)
+```
+
+```{r}
+data2 <- gapmiber1
+rhandsontable(data2)
+```
+
+let's preview the covid_19 data
+
+```{r}
+head(covid_19_data,10)
+```
+
+Let's make the last update editable into months
+
+```{r}
+rhandsontable(covid_19_data) %>% 
+  hot_col("Last Update",type="date" ,dateFormat = "YY-MM-DD")
+
+```
+
+Now let's put a data validation to the columns deaths to only pick numerics
+
+```{r}
+rhandsontable(covid_19_data) %>% 
+  hot_validate_numeric(col="Deaths", min = 0 ,max = 1000)
+```
+
+To make a certain rows read only
+
+```{r}
+rhandsontable(covid_19_data) %>% 
+  hot_cols(cols =c("Province/State","Country/Region"),readOnly = TRUE)
+```
+
+```{r}
+rhandsontable(covid_19_data) %>% 
+  hot_row(row = 2 ,readOnly = TRUE)
+```
+
+COMMENTS
+
+To add comments into a column such that as the user hovers around the column it displays a tooltip
+
+```{r}
+rhandsontable(regression_data) %>% 
+  hot_cell(row = 1 , col = 1 ,comment = "This is the independent variable") %>% 
+  hot_cell(row =1 ,col =2 ,comment = "This is the predictor variable" )
+
+
+```
+
+FREEZING COLOUMNS
+
+```{r}
+rhandsontable(mtcars) %>% 
+  hot_cols(fixedColumnsLeft = 1)
+```
+
+RESIZING AND MOVING COLUMNS
+
+```{r}
+rhandsontable(regression_data) %>% 
+  hot_cols(manualColumnMove = TRUE,manualColumnResize = TRUE)
+```
+
+```{r}
+rhandsontable(multivariate_lec2_1) %>% 
+  hot_cols(fixedColumnsLeft = 3 , manualColumnMove = TRUE ,manualColumnResize = TRUE)
+```

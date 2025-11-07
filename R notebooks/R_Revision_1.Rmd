@@ -1,0 +1,108 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+data("penguins")
+print(penguins)
+```
+
+1)  Understanding our data
+
+```{r}
+# Let's see the columns of our dataset with its datatypes
+glimpse(penguins)
+
+```
+
+2)  Displaying only the columns names
+
+```{r}
+names(penguins)
+```
+
+3)  SInce there are many missing values let's drop them for the first case then revisit them for imputation
+
+```{r}
+library(gtExtras)
+```
+
+```{r}
+cleaned_data = penguins %>% 
+  drop_na() %>% 
+  print()
+```
+
+```{r}
+# Generating a summary for all the variables
+cleaned_data %>% 
+  summary()
+```
+
+Grouping Island by sex
+
+```{r}
+table(cleaned_data$island,cleaned_data$sex)
+```
+
+```{r}
+cleaned_data %>% 
+  select(flipper_length_mm,bill_length_mm) %>% 
+  group_by(cleaned_data$sex) %>% 
+  arrange(flipper_length_mm) %>% 
+  print()
+```
+
+Let's create a new column called bill_length cm and add it to our cleaned data
+
+```{r}
+cleaned_data %>% 
+  mutate(bill_length_cm = (bill_length_mm)/10) %>% 
+  print() %>% 
+  gt() %>% 
+  gt_theme_guardian()
+```
+
+Displaying the median bill length mm and other Statistics
+
+```{r}
+median(cleaned_data$bill_length_mm)
+mean(cleaned_data$body_mass_g)
+mode(cleaned_data$sex)
+cor(cleaned_data$bill_depth_mm,cleaned_data$bill_depth_mm)
+var(cleaned_data$flipper_length_mm)
+sd(cleaned_data$flipper_length_mm)
+cov(cleaned_data$body_mass_g,cleaned_data$bill_depth_mm)
+```
+
+Plotting a histogram of the bill_length_mm variable
+
+```{r}
+boxplot(x= cleaned_data$bill_length_mm,title="Box Plot of the Bill length in MM",xlab = "bill_length_mm")
+```
+
+```{r}
+# The lower whisker and upper whisker values for our boxplot
+quantile(cleaned_data$bill_length_mm,0.25)
+quantile(cleaned_data$bill_length_mm,0.75)
+
+```
+
+Displaying a scatterplot of bill_length vs bill_depth
+
+```{r}
+cleaned_data %>% 
+ggplot(aes(x=bill_length_mm,y=bill_depth_mm))+
+  geom_point(color = "green",alpha = 0.5)+
+  labs(title= "Scatterplot of Bill Length vs Bill Depth",xlab = "Bill Length",ylab = "Bill Depth")+
+  facet_wrap(~sex)
+```
+
+```{r}
+gt_plt_summary(cleaned_data$bill_length_mm,cleaned_data$body_mass_g)
+```

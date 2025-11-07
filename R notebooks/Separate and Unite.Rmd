@@ -1,0 +1,62 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+**SEPARATE AND UNITE**
+
+Pre-requisites for the analysis
+
+```{r}
+library(tidyverse)
+library(gapminder)
+
+```
+
+To view the data set that we will be using
+
+```{r}
+print(gapminder)
+```
+
+Separate year and century in the data set
+
+```{r}
+gapminder %>% 
+  separate(col=year, into=c("Century","Year"),sep=2) %>% 
+  print()
+```
+
+Example 2
+
+```{r}
+names <- c("Kelvin Mugwe","Luka Modric","Harry Kane","Christian Romero","Pervis Estupian","Conor Gallagher")
+age <- c(23,37,30,26,24,24)
+clubs<- c("Free Agent","Real Madrid","Bayern Munich","Tottenham Hotspur","Brighton hoveAlbion","Chelsea")
+players <-data.frame(names,age,clubs)
+print(players)
+```
+
+To separate the names into first name and last name
+
+```{r}
+ players <-players %>%
+  separate(col=names,into=c("First_Name","Last_Name"),sep=" ") %>% 
+  print()
+```
+
+Changing the data type of age into integer
+
+```{r}
+players$age <- as.integer(players$age)
+glimpse(players)
+```
+
+Unite Function
+
+```{r}
+players %>% 
+  unite(col=Names,First_Name,Last_Name,sep=" ") %>% 
+  print()
+
+```

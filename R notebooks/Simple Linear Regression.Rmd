@@ -1,0 +1,73 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+LINEAR REGRESSION
+
+```{r}
+library(tidyverse)
+```
+
+To print the cars dataset
+
+```{r}
+print(cars)
+```
+
+To fit a linear model for the data
+
+$$
+H_{0}:\beta_{1}=\beta_{2} \quad v/s \quad H_{1}:\beta_{1} = \beta_{2}
+$$
+
+```{r}
+mod <- lm(dist~speed ,data=cars)
+summary(mod)
+```
+
+From the summary the Multiple R-Squared illustrates that 65.11 percent of the y variable is explained by the x variable . Adjusted R-Squared is not needed for a simple linear regression and is used
+
+The fitted regression model is
+
+$$
+E(y/x) = -17.5791 + 3.9324x
+$$
+
+From the fitted model the y intercept id -17.591 then the slope is 3.9324
+
+To fit a scatterplot for the model
+
+```{r}
+cars %>% 
+  ggplot(aes(dist,speed,fill="blue"))+ 
+  geom_point(fill="green")+
+  geom_smooth(method = lm,se = F)+
+  theme_bw()
+```
+
+Residual is the difference of the distance of the points from the expected value
+
+To plot the residuals and plot it to see the distribution of the residuals
+
+```{r}
+hist(mod$residuals)
+```
+
+The residuals are normally distributed
+
+$$
+\displaystyle (x-E(x)) ~ N(\mu,\sigma)
+$$
+
+To use our model to predict speeds 10,15,20
+
+$$
+E(y/x =10,15,20) \quad =-17.5791+3.9324x
+$$
+
+```{r}
+new_speeds <- data.frame(speed = c(10,15,20))
+predict(mod,new_speeds) %>% 
+  round(1)
+```

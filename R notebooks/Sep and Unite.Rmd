@@ -1,0 +1,133 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+DATA EXPLORATION
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+data("starwars")
+str(starwars)
+
+```
+
+```{r}
+head(starwars)
+
+```
+
+```{r}
+attach(starwars)
+names(starwars)
+
+```
+
+To find the number of variables
+
+```{r}
+length(starwars)
+```
+
+To list the observations in the hair color variable
+
+```{r}
+unique(hair_color)
+```
+
+To list the number of observations per each hair color
+
+```{r}
+table(hair_color)
+```
+
+Sorting from the largest to the smallest
+
+```{r}
+sort(table(hair_color),decreasing = TRUE)
+```
+
+Plotting a bar graph from the data
+
+```{r}
+barplot(sort(table(hair_color),decreasing = TRUE))
+```
+
+```{r}
+starwars %>% 
+  select(hair_color) %>% 
+  count(hair_color) %>% 
+  arrange(desc(n)) %>% 
+  gt() %>%
+  gt_theme_guardian() %>% 
+  tab_header(title= "Starwars Characters")
+
+```
+
+To display missing observations
+
+```{r}
+starwars %>% 
+  filter(!complete.cases(hair_color)) %>% 
+  gt() %>% 
+  gt_theme_pff()
+```
+
+To generate statistical analysis of the height variable
+
+```{r}
+summary(height)
+```
+
+To display the shape of our data
+
+```{r}
+boxplot(height)
+```
+
+To plot a histogram for the height variable
+
+```{r}
+hist(height)
+```
+
+SEPARATE AND UNITE
+
+```{r}
+library(gapminder)
+
+```
+
+We will be working with the Gapminder dataset
+
+```{r}
+print(gapminder)
+```
+
+To separate the year into Century and Year
+
+```{r}
+gapmiber1 <- gapminder %>% 
+  select(country,year,pop) %>% 
+  separate(col = year,into = c("Century","Year"),sep=2) %>% 
+  print()
+```
+
+To separate the starwars characters names into First name and Last name
+
+```{r}
+starwars %>% 
+  separate(name , into = c("First_Name","Last Name"),sep = " ") %>% 
+  print()
+```
+
+UNITING THE DATA
+
+```{r}
+gapmiber1 %>% 
+  unite(col = year,Century,Year,sep="") %>% 
+  print()
+```

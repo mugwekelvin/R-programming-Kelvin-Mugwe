@@ -1,0 +1,167 @@
+---
+title: "Handling Missing Data"
+output: html_notebook
+---
+
+Pre-requisites of handling missing data
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(naniar)
+library(gtExtras)
+```
+
+Datasets to use
+
+```{r}
+View(airquality)
+data(starwars)
+```
+
+Displaying missingness of data
+
+```{r}
+miss_var_summary(airquality) %>% 
+  gt() %>% 
+  gt_theme_guardian() %>% 
+  tab_header(title="Missingness of a variable")
+```
+
+Displaying only the null values
+
+```{r}
+airquality %>% 
+  filter(!complete.cases(.)) %>% 
+  head(10) %>% 
+  gt() %>% 
+  gt_theme_guardian() %>% 
+  tab_header(title = "Rows that have missing data")
+```
+
+Visualizing missing data
+
+```{r}
+vis_miss(airquality)
+
+```
+
+Relationship to one variable
+
+```{r}
+airquality %>% 
+  mutate(Missing_Ozone = factor(is.na(Ozone),
+                                levels=c("True","False"),
+                                labels=c("Missing","Not Missing"))) %>%
+           ggplot(aes(x=airquality$Wind),fill=Missing_Ozone)+
+           geom_histogram(position = "stack")+
+           labs(title="Distribution of Wind Speeds for Missing Vs Not Missing")+
+           theme_classic()
+
+```
+
+To display the distribution of the missing values
+
+```{r}
+airquality %>% 
+  select(Ozone,Solar.R,Wind,Temp) %>% 
+  ggplot(aes(x=Wind,y=Temp,size=Solar.R,color=is.na(Ozone)))+
+  geom_point(alpha=0.7)+
+  facet_wrap(~is.na(Ozone))+
+  labs(title = "Distribution of missing data")
+```
+
+Handling Missing Values
+
+1.  Dropping Missing Values where by we will see the observations that we are going to remove
+
+```{r}
+starwars %>%
+  select(name,mass,height,hair_color) %>% 
+  head(15) %>% 
+  gt() %>% 
+  gt_theme_guardian() %>% 
+  tab_header(title="Starwars Characters") %>% 
+  gt_highlight_rows(rows=is.na(mass),
+                    fill="steelblue") %>% 
+  gt_highlight_rows(rows=is.na(hair_color),
+                    fill="lightpink")
+```
+
+To now remove the missing value in the mass variable
+
+```{r}
+starwars %>% 
+  select(name,mass,height,hair_color) %>% 
+  drop_na(mass) %>% 
+  head(20) %>% 
+  gt() %>% 
+  gt_theme_guardian() %>% 
+  tab_header(title="Starwars Characters")
+  
+
+```
+
+2.  Changing the missing values
+
+    Here first we will generate a table that has the missing values for hair_color
+
+    ```{r}
+    starwars %>% 
+      select(name,hair_color,species) %>% 
+      filter(species=="Droid") %>% 
+      head(5) %>% 
+      gt() %>% 
+      gt_theme_guardian() %>% 
+      tab_header(title="Starwars Characters")
+    ```
+
+Now changing the hair color whenever its NA to none
+
+```{r}
+starwars %>% 
+  select(name,hair_color,species) %>% 
+  filter(species=="Droid") %>% 
+  mutate(hair_color=case_when(
+    is.na(hair_color)&
+      species=="Droid"~"none",
+    TRUE ~hair_color
+  )) %>% 
+  gt() %>%
+  gt_theme_guardian() %>% 
+  tab_header(title="Starwars")
+    
+
+```
+
+3.  Imputation
+
+    Here we change the missing values to a median or to the mean value of the observations
+
+    First we will display the missing values in the height variable
+
+    ```{r}
+    starwars %>%
+      select(name,height) %>% 
+      filter(is.na(height)) %>%
+      gt() %>% 
+      gt_theme_guardian() %>% 
+      tab_header(title="Starwars Characters")
+      
+    ```
+
+Replacing the missing value with the true Median value of the observations
+
+```{r}
+starwars %>% 
+  select(name,height) %>% 
+  mutate(height = case_when(
+    is.na(height) ~ median(height,rm.na=TRUE),
+    TRUE ~ height
+  )) %>%
+  gt() %>%
+  gt_theme_guardian() %>% 
+  tab_header(title="Starwars Characters ")
+```

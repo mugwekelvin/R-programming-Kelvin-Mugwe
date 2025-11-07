@@ -1,0 +1,279 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### Basic Data Analysis and Statistics with R
+
+#### Loading Required Libraries
+
+```{r}
+library('tidyverse')
+library('gtExtras')
+```
+
+```{r}
+data("billboard")
+print(billboard)
+```
+
+```{r}
+data("starwars")
+print(starwars)
+```
+
+```{r}
+names(starwars)
+```
+
+```{r}
+glimpse(starwars)
+```
+
+```{r}
+unique(starwars$vehicles)
+```
+
+### HANDLING MISSING DATA
+
+```{r}
+starwars %>%
+  filter(is.na(hair_color)) %>% 
+  print()
+```
+
+```{r}
+starwars %>% 
+  filter(is.na(sex)) %>%
+  print()
+```
+
+We would like to replace to remove the ones whose gender is NA from our analysis.
+
+```{r}
+starwars %>%
+  filter(!is.na(starwars$sex))
+  print()
+```
+
+#### Changing Data Types in R
+
+```{r}
+glimpse(starwars)
+```
+
+**Changing the Character Formatted Columns into Categorical Format**
+
+```{r}
+as.factor(starwars$sex)
+levels(sex)
+```
+
+### Data Imputation
+
+```{r}
+#first we would like to impute the hair color column but before that we would like to get the counts of each hair color
+starwars %>% 
+  select(hair_color) %>% 
+  count(hair_color) %>% 
+  print()
+```
+
+From this table we can see that the brown hair color was dominant among the different characters.
+
+```{r}
+# we would also like to see the number of the missing values in this column.
+starwars %>% 
+  select(hair_color) %>% 
+  filter(is.na(hair_color)) %>% 
+  count(hair_color) %>% 
+  print()
+```
+
+We had 5 missing values in the column and hence it is expected that we would be imputing with brown.
+
+```{r}
+starwars %>%
+  mutate(hair_color = case_when(is.na(hair_color) ~"brown",TRUE ~ hair_color)) %>% 
+  print() %>% 
+  gt() %>% 
+  gt_theme_guardian() %>% 
+  tab_header("Hair Color has been imputted in this dataset")
+
+```
+
+### Handling Numerical Columns with missing values
+
+```{r}
+ggplot(starwars,aes(x= mass))+
+  geom_density(alpha=0.4,fill="maroon")+
+  labs(title="Density Plot for the Mass Coloumn in the Starwars dataset")
+```
+
+Plotting a histogram for our dataset in the mass column
+
+```{r}
+ggplot(starwars,aes(x=mass))+
+  geom_histogram(bins = 10,fill = "skyblue",alpha = 0.6)+
+  labs(title="Histogram for the Mass column")
+```
+
+Our mass column is skewed towards the right hence we would use the median imputation instead
+
+```{r}
+#for this example I will be working with the mass coloumn
+starwars %>%
+  select(name,height,mass) %>% 
+  mutate(mass = case_when(is.na(mass) ~ median(mass,na.rm = TRUE),TRUE ~ mass)) %>%
+  print() %>%
+  gt() %>% 
+  gt_theme_nytimes() %>% 
+  tab_header(title = "Mass Column Imputted by mean")
+  
+```
+
+Now we can plot a violin plot for the mass column to also understand the distribution of the data
+
+```{r}
+ggplot(starwars,aes(y=mass))+
+  geom_violin(fill="skyblue")+
+  geom_boxplot(fill="blue")+
+  theme_bw()
+```
+
+### Removing Missing Values
+
+```{r}
+starwars %>% 
+  drop_na() %>% 
+  print() %>%
+  gt() %>%
+  gt_theme_nytimes %>% 
+  tab_header(title= "Starwars Dataset without any missing values")
+```
+
+### MUTATION OF FEATURES WITH R
+
+```{r}
+library('palmerpenguins')
+data('penguins')
+print(penguins)
+```
+
+```{r}
+names(penguins)
+```
+
+We may want to change \~bill_length_mm into bill_length_cm which will be done by dividing the original feature by 10.
+
+```{r}
+penguins %>%
+  drop_na() %>% 
+  mutate(bill_length_cm = bill_length_mm/10)
+```
+
+#### Challenge
+
+Convert the 'body_mass_g' into body_mass_kg by diving $$\frac{textbf{body_mass_g}}{1000}$$
+
+```{r}
+penguins %>% 
+  drop_na() %>% 
+  mutate(body_mass_kg = body_mass_g/1000) %>% 
+  print()
+```
+
+### FILTERING
+
+We may look to filter out the Penguin Species Adelie which belong to the male gender
+
+```{r}
+penguins %>% 
+  filter((species == "Adelie") & (sex == "male")) %>% 
+  arrange(-body_mass_g) %>% 
+  print() %>% 
+  gt() %>% 
+  gt_theme_nytimes()
+```
+
+#### SUMMARIZING NUMERICAL DATA
+
+```{r}
+penguins %>%
+  drop_na() %>% 
+  select(species,bill_length_mm) %>% 
+  group_by(species) %>%
+  summarize(mean_bill_length = mean(bill_length_mm)) %>% 
+  print() %>% 
+  gt() %>% 
+  gt_theme_guardian() %>% 
+  tab_header(title = "Mean Bill Length mm per Species")
+  
+```
+
+### **CATEGORICAL DATA ANALYSIS**
+
+```{r}
+library('forcats')
+library('gapminder')
+```
+
+```{r}
+data('diamonds')
+print(diamonds)
+```
+
+```{r}
+prop.table(table(diamonds$cut,diamonds$color))
+```
+
+```{r}
+glimpse(diamonds)
+```
+
+```{r}
+levels(diamonds$cut)
+```
+
+Combining Factors
+
+```{r}
+diamonds_1 <- diamonds %>% 
+  mutate(cut = fct_collapse(cut,Good = c("Good","Ideal"),Better = c("Very Good"),Best = "Premium",medium = "Fair")) %>% 
+  print()
+```
+
+How to change levels ordering in categorical data
+
+```{r}
+diamonds_1 %>% 
+  mutate(cut = fct_drop(cut)) %>% 
+  mutate(cut = fct_relevel(cut,c("Best","Better","Good","medium"))) %>%
+  select(cut) %>% 
+  table()
+```
+
+### Data Visualization
+
+#### 1.Bar Graph
+
+```{r}
+diamonds_2 <- diamonds %>%
+  select(cut) %>% 
+  count(cut) %>% 
+  print()
+```
+
+Visualizaing this in form of a bar graph
+
+```{r}
+ggplot(diamonds_2,aes(x= cut , y = n ,fill = cut))+
+  geom_bar(stat = "identity" , alpha = 0.5)+
+  theme_bw()+
+  labs( title = "Quality of Diamonds in quantity", x= "Category",y = "Count")
+```
+
+#### 2.Line Chart
+
+```{dat}
+```

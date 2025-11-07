@@ -1,0 +1,26 @@
+---
+title: "Introduction to Plotting in R"
+author: "Kelvin Mugwe"
+date: '2023-07-07'
+output:
+  html_document:
+    df_print: paged
+---
+
+# Plotting in R
+
+## Setting Environment
+
+```{r ggplot for penguin data visualization}
+library("tidyverse")
+library("palmerpenguins")
+
+```
+
+##Beggining the first plot
+
+```{r now plotting the data}
+ggplot(data=penguins)+
+  geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+  labs(title="Flipper LEngth vs Body Mass",caption="Data from 2007-2009")
+```

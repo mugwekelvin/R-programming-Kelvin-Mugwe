@@ -1,0 +1,30 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Scatterplots
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+?mpg
+```
+
+```{r}
+print(mpg)
+```
+
+To draw a scatterplot with a linear model excluding the standard error for highway miles per gallon and the engine displacement in litres where highway miles per gallon is less than 35
+
+```{r}
+mpg %>% 
+  filter(hwy < 35) %>% 
+  ggplot(aes(displ,hwy))+
+  geom_point(aes(color = drv))+
+  geom_smooth(method = lm,se = F)+
+  labs(title = " Scatterplot for Engine Displacement aganist Highway miles per gallon")+
+  theme_bw()
+```

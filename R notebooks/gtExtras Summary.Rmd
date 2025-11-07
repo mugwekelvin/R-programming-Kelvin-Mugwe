@@ -1,0 +1,165 @@
+---
+title: "gtExtras"
+output: html_notebook
+---
+
+Pre-requisites
+
+```{r}
+library('tidyverse')
+library('gtExtras')
+```
+
+```{r}
+data("mtcars")
+print(mtcars)
+```
+
+Let's print our table in a colorful manner
+
+```{r}
+head(mtcars) %>% 
+  gt() %>% 
+  gt_theme_guardian() %>% 
+  tab_header(title = "Table Styled like Guardian")
+
+```
+
+Hulk data_color
+
+```{r}
+head(mtcars) %>% 
+  gt::gt() %>% 
+  gt_hulk_col_numeric(mpg)
+```
+
+Let's use multiple columns
+
+```{r}
+head(mtcars) %>% 
+  gt::gt() %>% 
+  gt_hulk_col_numeric(mpg:wt,trim = TRUE)
+```
+
+The color pallete ranges from purple which is low to green which is the highest
+
+We can reverse the color Palette by using reverse function
+
+```{r}
+head(mtcars) %>% 
+  gt::gt() %>% 
+  gt_hulk_col_numeric(mpg:disp,reverse = TRUE,trim = TRUE)
+```
+
+Now using gt_color_rows
+
+The [`gt_color_rows()`](https://jthomasmock.github.io/gtExtras/reference/gt_color_rows.html) function is a more generic, thin boilerplate wrapper around [`gt::data_color()`](https://gt.rstudio.com/reference/data_color.html). A quick example of [`gt::data_color()`](https://gt.rstudio.com/reference/data_color.html) is below.
+
+Using named colors or hex colors is very simple!
+
+```{r}
+head(mtcars) %>% 
+  gt() %>% 
+  gt::data_color(
+    columns = mpg:disp,colors = c('white','purple')
+  )
+```
+
+Using a blue pallette for our data
+
+```{r}
+mtcars %>% 
+  head() %>% 
+  gt() %>% 
+  gt_color_rows(mpg:disp,palette = "ggsci::blue_material")
+```
+
+Highlighting Rows
+
+```{r}
+ head_car <- head(mtcars) %>%
+  rownames_to_column("cars")
+```
+
+```{r}
+names(head_car)
+```
+
+```{r}
+gt(head_car) %>%
+  gt_theme_nytimes() %>% 
+  gt_highlight_rows(rows = 2,font_weight = 'bold')
+```
+
+We may want to only need to bolden the target column and just highlight the rest this is how we do this
+
+```{r}
+gt(head_car) %>% 
+  gt_theme_nytimes() %>% 
+  gt_highlight_rows(rows = 5 , bold_target_only = TRUE,target_col = cars,fill= 'grey')
+```
+
+Plotting with gtExtras
+
+Data Preparation
+
+```{r}
+ mtcars %>% 
+  group_by(cyl) %>%
+  summarise(mpg_data = list(mpg)) %>% 
+  print()
+```
+
+1)  gt_sparkline( )
+
+```{r}
+mtcars %>%
+  group_by(cyl) %>%
+   # must end up with list of data for each row in the input dataframe
+  summarize(mpg_data = list(mpg), .groups = "drop") %>%
+   gt() %>%
+   gt_plt_sparkline(mpg_data)
+```
+
+2)  gt_plt_dist()
+
+plotting Distributions of our data
+
+```{r}
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarize(mpg_data = list(mpg), .groups = "drop") %>% 
+  gt() %>% 
+  gt_theme_nytimes() %>% 
+  gt_plt_dist(mpg_data)
+```
+
+3)gt_bar_plot
+
+```{r}
+mtcars %>% 
+  head() %>%
+  select(cyl,mpg) %>% 
+  mutate(mpg_pct_max = round(mpg/max(mpg) * 100 , 2),
+         mpg_scaled = mpg/max(mpg) * 100) %>% 
+  mutate(mpg_uncscaled = mpg) %>% 
+  gt() %>% 
+  gt_theme_nytimes() %>% 
+  gt_plt_bar_pct(column = mpg_scaled , scaled = TRUE,fill = "green",background = 'lightgreen') %>% 
+  gt_plt_bar_pct(column = mpg_uncscaled, scaled = FALSE,fill = "darkblue",background = 'lightblue')
+```
+
+```{r}
+team_df <- readRDS(url("https://github.com/nflverse/nflfastR-data/raw/master/teams_colors_logos.rds"))
+
+team_df %>%
+  dplyr::select(team_nick, team_abbr, team_conf, team_division, team_wordmark) %>%
+  head(8) %>%
+  gt(groupname_col = "team_conf") %>%
+  gt_merge_stack(col1 = team_nick, col2 = team_division) %>%
+  gt_img_rows(team_wordmark)
+```
+
+```{r}
+gt_plt_summary(mtcars)
+```

@@ -1,0 +1,104 @@
+---
+title: "Categorical Data Analysis"
+output: html_notebook
+---
+
+CATEGORICAL DATA ANALYSIS
+
+we will work with the \~forcats library
+
+```{r}
+library(forcats)
+```
+
+To display the used the datasets we will use
+
+```{r}
+print(gss_cat)
+```
+
+To get a glimpse of the data and the data types
+
+```{r}
+glimpse(gss_cat)
+```
+
+In the race variable the data type is factors , now to display the observations in the variable
+
+```{r}
+levels(gss_cat$race)
+```
+
+To display the summary of the cat races by quantity
+
+```{r}
+gss_cat %>%
+  select(race) %>% 
+  count(race) %>% 
+  print()
+  
+```
+
+To drop the levels that are not in use or one that contain null values
+
+```{r}
+gss_cat %>% 
+  select(race) %>% 
+  mutate(race = fct_drop(race)) %>% 
+  table()
+```
+
+To change the ordering of the levels
+
+```{r}
+gss_cat %>%
+  mutate(race = fct_drop(race)) %>% 
+  mutate(race = fct_relevel(race, c("White","Black","Other"))) %>% 
+  select(race) %>% 
+  table()
+```
+
+We would want to plot a bar graph illustrating the count of the categorical variable marital from smallest to largest
+
+First for visualization we will load the tidyverse library
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+gss_cat %>% 
+  mutate(marital = fct_infreq(marital)) %>% 
+  mutate(marital = fct_rev(marital)) %>% 
+  ggplot(aes(marital))+
+  geom_bar(fill="steelblue")+
+  labs(title = "Bar graph illustrating the various marital statuses")+
+  theme_bw()
+
+```
+
+To plot a graph of various religious groups by mean watching time
+
+```{r}
+gss_cat %>% 
+  group_by(relig) %>% 
+  summarise(mean_tv = mean(tvhours,na.rm=TRUE)) %>% 
+  mutate(relig = fct_reorder(relig,mean_tv)) %>% 
+  ggplot(aes(mean_tv,relig))+
+  geom_point(fill = "green")+
+  theme_bw()
+```
+
+To display the table showing for each religious group which party they support
+
+```{r}
+table(gss_cat$relig,gss_cat$partyid)
+```
+
+To combine the Not strong Democrats , strong democrats , not strong democrats ,etc.. we will use factorial collapse
+
+```{r}
+gss_cat %>% 
+  mutate(partyid = fct_collapse( partyid ,Other = c("No answer","Don't know","Other party"),Republican = c("Strong republican","Not str republican"),Independent = c("Ind,near rep","Independent ","Ind,near dem "),Democrat = c("Not str democrat","Strong democrat"))) %>% 
+  count(partyid)
+```

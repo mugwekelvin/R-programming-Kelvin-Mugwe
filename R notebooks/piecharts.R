@@ -1,0 +1,26 @@
+
+Car_no <- c(20,40,35,15,10)
+cars <- c("Toyota","Suzuki","Isuzu","Mazda","Tesla")
+library(tidyverse)
+percent=round((Car_no/sum(Car_no))*100)
+new_label=(paste(cars,"-",percent,"%",sep=" "))
+pie(Car_no,main="Vehicles Ownership on Ring Road Residence",labels= new_label)
+box()
+
+# To use Rainbow Colors
+Car_no <- c(20,40,35,15,10)
+cars <- c("Toyota","Suzuki","Isuzu","Mazda","Tesla")
+library(tidyverse)
+percent=round((Car_no/sum(Car_no))*100)
+new_label=(paste(cars,"-",percent,"%",sep=" "))
+pie(Car_no,main="Vehicles Ownership on Ring Road Residence",labels= new_label,col=rainbow(5))
+box()
+#USing Plotrix
+library(plotrix)
+Car_no <- c(20,40,35,15,10)
+cars <- c("Toyota","Suzuki","Isuzu","Mazda","Tesla")
+library(tidyverse)
+percent=round((Car_no/sum(Car_no))*100)
+new_label=(paste(cars,"-",percent,"%",sep=" "))
+pie3D(Car_no,main="Vehicles Ownership on Ring Road Residence",labels= new_label,col=rainbow(5),explode=0.2)
+save.image("Piechart.png")
