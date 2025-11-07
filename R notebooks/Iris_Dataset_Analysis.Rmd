@@ -1,0 +1,156 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### Data Analysis for the Iris Dataset
+
+```{r}
+library('tidyverse')
+```
+
+Loading the dataset
+
+```{r}
+data('iris')
+print(iris)
+```
+
+Understanding the features our dataset has
+
+```{r}
+names(iris)
+
+```
+
+Getting a glimpse of our data to get to understand the structure of our dataset
+
+```{r}
+glimpse(iris)
+```
+
+A brief summary for the dataset
+
+```{r}
+summary(iris)
+```
+
+From the data the species are evently selected.
+
+Displaying the null values
+
+```{r}
+iris %>% 
+  filter(!complete.cases(.)) %>% 
+  print()
+```
+
+There are no missing values in our dataset hence we can use the data for modelling
+
+### Data Analysis
+
+Displaying relationships between the variables
+
+```{r}
+iris %>% 
+  select(-Species) %>% 
+  cor()
+```
+
+There is a strong positive relationship between petal length and petal width also a positive strong relationship between Petal Length, Petal Width with Sepal Length. Also there is a relative weak negative relationship between Sepal Width and Petal Length.
+
+### Data Visualization for the strongest relationship
+
+```{r}
+ggplot(iris,aes(x=Petal.Width,y= Petal.Length,color = Species))+
+  geom_point(alpha = 0.4)+
+  theme_bw()+
+  labs(title= "Relationship between Petal Width aganist Petal Length")
+  
+```
+
+### PLotting a violin plot to understand the distribution of our data
+
+```{r}
+ggplot(iris,aes(y = Sepal.Length))+
+  geom_violin(trim = FALSE)+
+  geom_boxplot(width = 0.5)+
+  labs(title = "Violin Chart for the Sepal Length variable")+
+  theme_bw()
+```
+
+```{r}
+
+ggplot(iris, aes(y = Sepal.Length)) +
+  geom_violin(trim = FALSE, fill = "lightblue", color = "darkblue", alpha = 0.5) +  # Added trim, fill, color, and alpha
+  geom_boxplot(width = 0.2, fill = "gray", color = "black", alpha = 0.5) +       # Adjusted width, fill, color, and alpha
+  labs(title = "Violin and Box Plot of Sepal Length",
+       y = "Sepal Length (cm)") +                                    # Improved title and y-axis label
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))  # Centered title
+```
+
+Density plot for the Sepal Width
+
+```{r}
+ggplot(iris,aes(x = Sepal.Width))+
+         geom_density(fill = "skyblue",color = "darkblue",alpha = 0.5)+
+         theme_bw()+
+         labs(title = "Density plot for the Sepal Width varaible")
+        
+```
+
+What about the histogram
+
+```{r}
+ggplot(iris,aes(x = Sepal.Width))+
+  geom_histogram(fill = "skyblue",bins = 10,color = "darkblue")+
+  theme_bw()+
+  labs(title = "Histogram for the Sepal Width variable",x = "Sepal Width", y = "Frequency")
+```
+
+From this it shows that the sepal Width Column is normally distributed with bins = 10
+
+### Boxplots
+
+```{r}
+ggplot(iris,aes(x = Sepal.Length))+
+  geom_boxplot(width = 0.8 , fill = "maroon",color= "red")+
+  theme_bw()+
+  labs(title = "Boxplot for the Sepal Length variable",x = "Sepal Length" )
+```
+
+From the boxplot we can see that the median is around 5.8 we could try to prove this using the percentiles command
+
+```{r}
+q1 = quantile(iris$Sepal.Length,.25)
+q2 = quantile(iris$Sepal.Length,.75)
+q3 = q2-q1
+q3
+```
+
+What about using the 50th percentile
+
+```{r}
+q3 = quantile(iris$Sepal.Length,.5)
+q3
+```
+
+Plotting a bar graph for Petal Length aganist species
+
+```{r}
+petal_length_summ <- iris %>% 
+  select(Petal.Length,Species) %>% 
+  group_by(Species) %>% 
+  summarise(mean_petal_length = mean(Petal.Length)) %>% 
+  print()
+```
+
+Now plotting this data in a graph
+
+```{r}
+ggplot(petal_length_summ,aes(x = Species , y = mean_petal_length , fill = Species))+
+  geom_bar(stat = "identity")+
+  theme_bw()+
+  labs(title = " Mean Petal Length for each species" , x = "Species" , y = "Mean Petal Length")
+```

@@ -1,0 +1,68 @@
+---
+---
+---
+
+**LINEAR REGERESSION**
+
+```{r}
+library(tidyverse)
+
+```
+
+```{r}
+data("cars") 
+print(cars)
+
+```
+
+Creating a Linear Model
+
+```{r}
+cars %>% 
+  lm(dist~speed,data=.) %>% 
+  summary()
+
+```
+
+Alternatively
+
+```{r}
+mod <- cars %>% 
+  lm(dist~speed,data=.)
+```
+
+To get the attributes of the object mod
+
+```{r}
+attributes(mod)
+```
+
+Now plotting the residuals of the mod in a histogram
+
+```{r}
+hist(data=mod,x=mod$residuals,color="blue",fill="grey")
+
+```
+
+To use the model to predict various speeds
+
+```{r}
+new_speeds <- data.frame(speed=c(10,15,20)) %>% 
+  print()
+```
+
+Now predicting the new observations
+
+```{r}
+predict(mod,new_speeds) %>%
+  round(2)
+```
+
+Plotting the linear model graph
+
+```{r}
+ggplot(data=cars,aes(x=cars$speed,y=cars$dist))+
+  geom_point(color="yellow")+
+  geom_abline()
+  theme_bw()
+```

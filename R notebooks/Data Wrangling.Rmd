@@ -1,0 +1,50 @@
+**Manipulation of Data in R Programming**
+
+```{r}
+library(tidyverse
+```
+
+```{r}
+data("msleep")
+glimpse(msleep)
+```
+
+Rename a Variable
+
+```{r}
+msleep %>% 
+  rename("Conserv" = "conservation")
+
+
+```
+
+Reorder variables if you want Vore,name then everything else
+
+```{r}
+msleep %>% 
+  select(vore,conservation,everything())
+
+
+```
+
+Change a variable Type
+
+1.  Identifying the type of variable we use the class function in r
+
+    ```{r}
+    class(msleep$vore)
+    ```
+
+2.  Changing vore to factor
+
+<!-- -->
+
+    ```{r}
+
+    msleep$vore = as.factor(msleep$vore)
+    ```
+
+```{r}
+glimpse(msleep)
+
+```

@@ -1,0 +1,88 @@
+---
+title: "R Data Visualization"
+output: html_notebook
+---
+
+Prerequisites for the visualization
+
+```{r}
+library(tidyverse)
+```
+
+We will use this data set for visualization
+
+```{r}
+data("starwars")
+print(starwars)
+drop_na(starwars)
+```
+
+To plot a scatter plot between Height and Mass
+
+```{r}
+ggplot(data=starwars,aes(x=starwars$height,y=starwars$mass))+
+  geom_point(color="blue",size=2)+
+  geom_smooth(method=lm)+
+  labs(title="Mass vs Height in the Starwars Character",x="Height",y="Mass")
+  theme_bw()
+```
+
+To get a glimpse of the dataset
+
+```{r}
+glimpse(starwars)
+```
+
+To create a new data set and convert height as double
+
+```{r}
+starwars %>% 
+  mutate(height = as.double(height))
+```
+
+Now lets select height and mass while also removing the missing values
+
+```{r}
+starwars_2 <- starwars %>% 
+  select(height,mass) %>% 
+  drop_na %>% 
+  print()
+
+```
+
+Now with the data lets try to find the correlation between height and weight
+
+```{r}
+cor(starwars_2$height,starwars_2$mass)
+```
+
+This shows there is a relative positive relationship between the height and mass
+
+Now lets make a linear model between the two variables
+
+```{r}
+mod <- lm(data=starwars_2,mass~height)
+
+```
+
+Now lets generate a summary of our model
+
+```{r}
+summary(mod)
+```
+
+From the Multiple R squared it yells us that 1.7% of mass can be explained by using the height.This shows us that this is a weak model
+
+Now lets predict the following observations
+
+```{r}
+pred <- data.frame(c(50,60,70))
+print(pred)
+
+```
+
+Now predicting the observations
+
+```{r}
+
+```

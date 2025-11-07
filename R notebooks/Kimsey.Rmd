@@ -1,0 +1,106 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(gtExtras)
+```
+
+$$
+H_{0} : \beta_{0} = \beta_{1} \quad  v\s \quad H_{1} : \beta_{0}\neq \beta_{1}
+$$
+
+To print out the cars dataset
+
+```{r}
+print(iris)
+```
+
+To know the data types of a particular variable
+
+```{r}
+class(iris$Species)
+```
+
+To change variable types
+
+```{r}
+new_dat$Species = as.character(new_dat$Species)
+```
+
+To confirm if the species variable data type is a character
+
+```{r}
+class(new_dat$Species)
+```
+
+To filter out observations where Sepal.Length \> 5 and Sepal Width \>3 where species is Setosa
+
+```{r}
+iris %>% 
+  select(Sepal.Length,Sepal.Width,Species) %>% 
+  print() %>% 
+  gt() %>% 
+  gt_theme_excel() %>% 
+  tab_header(title = " Filtered ")
+```
+
+Editing data in R
+
+```{r}
+library(rhandsontable)
+```
+
+```{r}
+rhandsontable(cars)
+
+```
+
+To highlight row2
+
+```{r}
+rhandsontable(cars) %>% 
+  hot_row(row = 2 , readOnly = TRUE)
+```
+
+To move and resize coloumns in our data
+
+```{r}
+rhandsontable(cars) %>% 
+  hot_cols(manualColumnMove = TRUE,manualColumnResize = TRUE)
+```
+
+To put a tooltip at row 1 ,col 1 and row2, col2
+
+```{r}
+rhandsontable(cars) %>% 
+  hot_cell(row = 1,col = 1,comment = "This is the distance covered ")
+```
+
+Linear Regression
+
+```{r}
+mod <- lm(cars$speed ~ cars$dist)
+summary(mod)
+ 
+```
+
+$$
+E(Y/X) = 8.28391 \quad + \quad 0.16557x
+$$
+
+To predict when x = 14 ,15,16
+
+```{r}
+distance <- c(14,15,16)
+pred <- data.frame(distance)
+print(pred)
+
+```
+
+```{r}
+
+predict(mod,pred)
+```

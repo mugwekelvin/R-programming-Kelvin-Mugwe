@@ -1,0 +1,424 @@
+---
+title: 'Practice Workbook: Machine Learning with R'
+output: html_document
+date: "2023-11-27"
+---
+
+# Sample Workbook: Machine Learning with R Course
+
+**Machine learning with R** refers to the use of the R programming language and its associated libraries, packages, and frameworks to implement, explore, and deploy machine learning models and algorithms.
+
+1.  **Supervised learning** is a machine learning technique where algorithms learn from labeled training data, with input-output pairs provided, to predict or infer a mapping function from the input to the output.
+    -   Examples: Predicting whether an email is spam or not (classification). Forecasting house prices based on features like size, location, and number of rooms (regression).
+2.  **Unsupervised learning** involves training algorithms on unlabeled data, where the algorithm learns patterns, structures, or relationships within the data without explicit input-output pairs.
+    -   Examples: Grouping customers based on purchasing behavior for targeted marketing (clustering). Reducing the dimensions of high-dimensional data for easier visualization and analysis (principal component analysis).
+
+## Regression Algorithms
+
+### Pre-requisites
+
+```{r}
+# Install the caret package
+# We'll use the caret packaget to build and evaluate machine learning models
+install.packages("caret", quiet = TRUE)
+```
+
+```{r}
+# Load the caret packaget
+library(caret) 
+```
+
+```{r}
+# Read CSV file from URL
+data <- read.csv("https://bit.ly/3RjxkTs")
+
+# Preview 6 records
+head(data)
+```
+
+```{r}
+# Handle missing values or NAs
+data <- na.omit(data)
+
+# Convert columns to appropriate data types
+data$Experience <- as.numeric(data$Experience)
+data$Salary <- as.numeric(data$Salary)
+data$Skills <- as.factor(data$Skills)
+data$Education <- as.factor(data$Education)
+data$Job.Role <- as.factor(data$Job.Role)
+
+# Remove 'Name' column
+data <- data[, -which(names(data) == "Name")]
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Split data into training and testing sets
+splitIndex <- createDataPartition(data$Salary, p = .70, list = FALSE)
+train <- data[splitIndex,]
+test <- data[-splitIndex,]
+```
+
+### Concept 1. Linear Regression
+
+This algorithm establishes a linear relationship between predictors and a continuous target variable, aiming to minimize the difference between predicted and actual values. It's suitable when exploring relationships between variables or predicting outcomes when a linear relationship is assumed or observed. For instance, in finance, linear regression can be used to predict stock prices based on historical data.
+
+To develop a linear regression model, we use the `lm` function in R.
+
+```{r}
+# Linear regression
+lm_model <- lm(Salary ~ ., data = train)
+```
+
+-   We use `Salary ~ .` to specify that the model predicts the "Salary" variable using all other variables in the `train` dataset.
+
+-   We set `data = train` to specify that the data used to build the linear regression model is sourced from the `train` dataset.
+
+```{r}
+# Make predictions on testing set
+predictions <- predict(lm_model, newdata = test)
+```
+
+-   We set `newdata = test` to indicate that we linear regression model (`lm_model`) to generate predictions based on the data in the `test` dataset.
+
+```{r}
+# Calculate RMSE
+rmse <- sqrt(mean((test$Salary - predictions)^2))
+print(paste("Root Mean Squared Error (RMSE):", rmse))
+```
+
+-   We calculate the Root Mean Squared Error (RMSE) by measuring the square root of the average of the squared differences between the actual "Salary" values in the `test` dataset and the predicted values (`predictions`) obtained from the model.
+
+### Concept 2. Decision Trees for Regression
+
+This algorithm segments the predictor space into smaller regions, predicting numerical outcomes based on these divisions. We use this algorithm when the relationships between predictors and the target variable are nonlinear or involve interactions between variables. For instance, in retail, decision trees can predict sales based on various factors like promotions, location, and seasonality.
+
+We use the `rpart` package in R to implement this algorithm.
+
+```{r}
+# Load necessary libraries if not already loaded
+library(rpart)
+```
+
+```{r}
+# Decision Trees
+dt_model <- rpart(Salary ~ ., data = train)
+
+# Make predictions on testing set
+predictions <- predict(dt_model, newdata = test)
+
+# Calculate RMSE
+rmse <- sqrt(mean((test$Salary - predictions)^2))
+print(paste("Root Mean Squared Error (RMSE):", rmse))
+```
+
+### Concept 3. Support Vector Machines (SVM) for Regression
+
+The SVM regression algorithm finds the best-fitting hyperplane to predict continuous outcomes, aiming to maximize the margin between data points. It's suitable for smaller datasets or when dealing with complex relationships and outliers. For example, in climate science, we can use SVM regression to forecast temperatures based on various meteorological factors.
+
+We use the `e1071` package in R to work with this algorithm.
+
+```{r}
+install.packages("e1071", quiet = TRUE)
+library(e1071)
+```
+
+```{r}
+# Support Vector Machines (SVM) for Regression
+svm_model <- svm(Salary ~ ., data = train)
+
+# Make predictions on testing set
+predictions <- predict(svm_model, newdata = test)
+
+# Calculate RMSE
+rmse <- sqrt(mean((test$Salary - predictions)^2))
+print(paste("Root Mean Squared Error (RMSE):", rmse))
+```
+
+### Concept 4. Random Forest for Regression
+
+The random forest algorithm aggregates predictions from multiple decision trees to improve predictive accuracy by reducing overfitting. It's suitable for large datasets with numerous predictors and are robust against overfitting. For instance, in healthcare, random forest regression can predict patient treatment costs based on various health indicators and medical history.
+
+To work with this algorithm, we use the `randomForest` package in R.
+
+```{r}
+install.packages("randomForest", quiet = TRUE)
+```
+
+```{r}
+# Import the random
+library(randomForest)
+
+# Random Forest for Regression
+rf_model <- randomForest(Salary ~ ., data = train)
+
+# Make predictions on testing set
+predictions <- predict(rf_model, newdata = test)
+
+# Calculate RMSE
+rmse <- sqrt(mean((test$Salary - predictions)^2))
+print(paste("Root Mean Squared Error (RMSE):", rmse))
+```
+
+### Concept 5. Gradient Boosting Machines (GBM) for Regression
+
+A GBM algorithm iteratively builds an ensemble of weak regression algorithms, sequentially minimizing errors to improve predictions. It's useful for enhancing prediction accuracy by combining multiple weak learners. For example, in marketing, GBM regression can predict customer lifetime value based on past purchase behavior and demographic information.
+
+We use the `gbm` package in R to work with this algorithm.
+
+```{r}
+install.packages("gbm", quiet = TRUE) 
+```
+
+```{r}
+# Load necessary libraries if not already loaded
+library(gbm)
+
+# Gradient Boosting Machines (GBM) for Regression
+gbm_model <- gbm(Salary ~ ., data = data)
+
+# Make predictions on testing set
+predictions <- predict(gbm_model, newdata = test)
+
+# Calculate RMSE
+rmse <- sqrt(mean((test$Salary - predictions)^2))
+print(paste("Root Mean Squared Error (RMSE):", rmse))
+```
+
+## Classification Algorithms
+
+### Prerequisites
+
+```{r}
+# Load the dataset 
+# Read CSV file from URL and store it in the 'data' variable
+data <- read.csv("https://bit.ly/3N8NWe6")
+
+# Preview the dataframe
+head(data)
+```
+
+```{r}
+# Convert 'Gender' and 'Education' columns to numeric factors
+data$Gender <- as.numeric(factor(data$Gender))
+data$Education <- as.numeric(factor(data$Education)) 
+
+# Preview dataframe
+head(data)
+```
+
+```{r}
+# Remove 'Name' column
+data <- data[, -which(names(data) == "Name")]
+```
+
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Create a partition index for the data
+splitIndex <- createDataPartition(data$Job_Satisfaction, p = .80, list = FALSE)
+
+# Create 'train' and 'test' datasets based on the split index
+train <- data[splitIndex,]
+test <- data[-splitIndex,]
+```
+
+### Concept 6. Logistic Regression
+
+This algorithm models the probability of binary outcomes using a logistic function, making them suitable for binary classification problems. It's ideal for scenarios where interpreting the probability of a binary outcome is essential. For instance, in healthcare, logistic regression can predict the likelihood of a patient having a specific disease based on medical test results.
+
+To work with this algorithm, we use the `glm` function.
+
+```{r}
+# Logistic Regression
+model <- glm(Job_Satisfaction ~ ., family = binomial, data = train)
+
+# Make predictions on the test data
+predictions <- predict(model, newdata = test)
+```
+
+```{r}
+# Create a confusion matrix to evaluate the performance of the model
+confusionMatrix(as.factor(ifelse(predictions > 0.5, 1, 0)), as.factor(test$Job_Satisfaction))
+```
+
+-   We use the `confusionMatrix` function to evaluate the classification performance by comparing the predicted values (converted to factors based on a threshold of 0.5 using `ifelse(predictions > 0.5, 1, 0)`) against the actual values of the "Job_Satisfaction" variable in the `test` dataset.
+
+### Concept 7. Support Vector Machines (SVM) for Classification
+
+The SVM classification algorithm finds the optimal hyperplane for separating classes in the feature space, adjusted by kernel types and regularization. It's effective for binary or multi-class classification with complex boundaries, like classifying images into different categories based on pixel values.
+
+We use `e1071` package in R to work with this algorithm.
+
+```{r}
+# Load necessary libraries if not already loaded
+library(e1071)
+```
+
+```{r}
+# Support Vector Machines (SVM) for Classification
+svm_model <- svm(as.factor(Job_Satisfaction) ~ ., data = train)
+
+# Make predictions on the test data
+predictions <- predict(svm_model, newdata = test)
+```
+
+```{r}
+# Compute the confusion matrix
+confusionMatrix(predictions, as.factor(test$Job_Satisfaction))
+```
+
+### Concept 8. Random Forest for Classification
+
+Leveraging the `randomForest` package in R, a random forest algorithm aggregates predictions from multiple decision trees to enhance classification accuracy while controlling overfitting. Random forest for classification suitable for complex datasets with numerous predictors and non-linear relationships, for instance, classifying customer segments based on various demographic and behavioral features.
+
+```{r}
+install.packages("randomForest", quiet = TRUE) 
+```
+
+```{r}
+# Load randomForest
+library(randomForest)
+```
+
+```{r}
+# Random Forest for Classification 
+rf_model <- randomForest(as.factor(Job_Satisfaction) ~ ., data = train)
+
+# Make predictions on testing set
+predictions <- predict(rf_model, newdata = test)
+
+# Compute the confusion matrix
+confusionMatrix(predictions, as.factor(test$Job_Satisfaction))
+```
+
+## Unsupervised learning
+
+**Unsupervised learning** is a branch of machine learning where the algorithms are trained on unlabeled data without any specific target variable or explicit feedback.
+
+In unsupervised learning, the primary goal is to uncover underlying patterns, structures, or relationships within the data.
+
+### Concept 9: Clustering
+
+**Clustering** in unsupervised learning is a technique used to group similar data points together based on their inherent characteristics or proximity in the feature space. The primary goal of clustering is to identify natural groupings or clusters within a dataset without any predefined labels or target variables.
+
+```{r}
+# Load necessary libraries
+library(tidyverse)  # For data manipulation and visualization
+library(caret)      # For machine learning tools
+library(mlr)        # For machine learning in R
+```
+
+```{r}
+# We read the dataset from a URL and preprocess it
+data <- read_csv("https://afterwork.ai/ds/e/information_technology_1l9rp.csv")
+data
+```
+
+```{r}
+# We select specific columns for clustering and scaling the data
+data <- data %>% 
+  as.data.frame() %>% 
+  select(Experience, `Years in Current Role`, `Projects Completed`) %>% 
+  scale()
+
+# Preview data
+head(data)
+```
+
+```{r}
+# We perform K-means clustering with k = 3
+kmeans_model <- kmeans(data, centers = 3)
+
+# We assign clusters to the original dataset and convert to a data frame
+data <- data %>% 
+  as.data.frame() %>% 
+  mutate(cluster = kmeans_model$cluster)
+
+# We preview the dataframe
+head(data)
+```
+
+```{r}
+# We visualize clusters using a scatter plot
+ggplot(data, aes(Experience, `Years in Current Role`, color = as.factor(cluster))) +
+  geom_point() +
+  labs(color = "Cluster")
+```
+
+-   We create a scatterplot using the "Experience" and "Years in Current Role" variables from the `data` dataset.
+
+-   The points are colored based on the clusters indicated by the `cluster` variable (converted to a factor) to visually represent different clusters in the data.
+
+-   The `labs` function sets the color legend label as "Cluster".
+
+**Elbow Method for Optimal K (Number of Clusters)**
+
+```{r}
+# We perform the Elbow Method to determine the optimal number of clusters (K)
+wss <- numeric(10)  # Within-cluster sum of squares
+for (i in 1:10) {
+  kmeans_temp <- kmeans(data, centers = i)
+  wss[i] <- kmeans_temp$tot.withinss
+}
+```
+
+-   We initialize an empty numeric vector `wss` to store within-cluster sum of squares values.
+
+-   We then conduct a loop from 1 to 10, performing k-means clustering on the `data` for different numbers of clusters (from 1 to 10) and store the within-cluster sum of squares in the `wss` vector for each iteration.
+
+```{r}
+# Plotting the Elbow Method graph
+plot(1:10, wss, type = "b", xlab = "Number of Clusters (K)", ylab = "Total Within Sum of Squares", main = "Elbow Method for Optimal K")
+```
+
+-   We generate a plot showing the within-cluster sum of squares (`wss`) against the number of clusters (from 1 to 10) using a line plot (`type = "b"`). The x-axis represents the number of clusters (K), while the y-axis displays the total within-cluster sum of squares.
+
+-   We use this plot to identify an optimal number of clusters by looking for an 'elbow' point where the rate of decrease in within-cluster sum of squares slows down.
+
+### Concept 10: Principal Component Analysis
+
+**Principal Component Analysis (PCA)** is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components.
+
+In the context of machine learning, PCA is a common way of speeding up algorithms by reducing the dimensionality of the data. We use PCA when we have a high-dimensional data set, and we want to reduce its dimensionality while keeping as much of the data's variation as possible.
+
+```{r}
+# We load necessary libraries
+library(tidyverse)
+library(caret)
+library(mlr)
+```
+
+```{r}
+# We read CSV file from URL 
+data <- read_csv("https://afterwork.ai/ds/e/information_technology_f2vn.csv")
+data
+```
+
+```{r}
+# We create a pre-processing model
+preProcValues <- preProcess(data, method = c("center", "scale"))
+```
+
+-   We use the `preProcess` function to create preprocessing values for centering and scaling the data (`data`) using the specified methods (`"center"` and `"scale"`).
+
+```{r}
+# We apply pre-processing model to data
+dataNorm <- predict(preProcValues, data)
+
+# We perform PCA on the dataset
+pca <- prcomp(dataNorm[,3:6], scale. = TRUE)
+```
+
+-   We perform Principal Component Analysis (PCA) using the `prcomp`function on a subset of columns (3 to 6) from the `dataNorm` dataset.
+
+-   We also set `scale. = TRUE` to scale the data before conducting the PCA analysis.
+
+```{r}
+# Extract PCA components
+pca_components <- as.data.frame(pca$x)  # Extracting PCA components
+
+# Display the PCA components
+pca_components
+```
