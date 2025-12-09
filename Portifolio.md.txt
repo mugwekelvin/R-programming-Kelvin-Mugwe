@@ -1,0 +1,313 @@
+# Minimal Mistakes Portfolio Website Structure
+# All files are included in one document. Copy them into your repository.
+
+====================
+= _config.yml
+====================
+
+# Basic site settings
+locale: "en-US"
+title: "Kelvin Mugwe Portfolio"
+name: "Kelvin Mugwe Watheri"
+description: "Portfolio showcasing Data Science, UI/UX, Designs, Projects, and Notebooks"
+url: "https://yourusername.github.io"
+theme: minimal-mistakes-jekyll
+
+# Build settings
+markdown: kramdown
+
+# Collections
+collections:
+  projects:
+    output: true
+    permalink: /projects/:path/
+
+# Author Profile
+author:
+  name: "Kelvin Mugwe"
+  avatar: "/assets/images/profile.jpg"
+  bio: "Data Scientist | UI/UX Designer | Analyst"
+  email: "kelvinmugwe439@gmail.com"
+  links:
+    - label: GitHub
+      icon: "fab fa-github"
+      url: "https://github.com/R-programming-Kelvin-Mugwe"
+    - label: LinkedIn
+      icon: "fab fa-linkedin"
+      url: "https://www.linkedin.com/in/kelvin-mugwe-9b133b232"
+    - label: Email
+      icon: "fas fa-envelope"
+      url: "mailto:kelvinmugwe439@gmail.com"
+    - label: LinkedIn
+      icon: "fab fa-linkedin"
+      url: "https://linkedin.com/in/kelvin-mugwe-9b133b232"
+    - label: YouTube
+      icon: "fab fa-youtube"
+      url: "https://youtube.com"
+
+# Plugins
+plugins:
+  - jekyll-include-cache
+
+
+====================
+= index.md
+====================
+---
+layout: home
+author_profile: true
+---
+
+Welcome to my portfolio website. I am **Kelvin Mugwe**, a Data Scientist, UI/UX Designer, and Digital Creative passionate about using analytics and design to build solutions that empower people.
+
+Explore my:
+- **Data Science Projects**
+- **UI/UX Designs**
+- **Graphic & Poster Designs**
+- **Videos & YouTube Work**
+- **Technical Notebooks (R & Python)**
+- **Work Experience, Education, and Skills**
+
+
+====================
+= _pages/about.md
+====================
+---
+layout: single
+title: "About Me"
+permalink: /about/
+author_profile: true
+---
+
+I am a Statistics-trained Data Scientist with strong skills in Python, R, Machine Learning, UI/UX Design, and Data Visualization.
+
+My background blends technical analytics with creative design — enabling me to build solutions that are both insightful and user-centered.
+
+### **Education**
+- **Multimedia University of Kenya** – BSc Mathematics & Computer Science (Statistics Option), *First Class Honours*, 2020–2024
+
+### **Work Experience**
+
+#### **Presidential Digital Talent Program (ICT Authority)** — *ICT Support & Data Analyst Intern*  
+**Jan 2025 – Dec 2025**, County Assembly of Nyeri
+- Operated Hansard recording equipment.
+- Conducted photography and videography for Assembly events.
+- Analyzed legislative and operational data for reports.
+- Managed and updated the County Assembly website.
+- Provided ICT support and troubleshooting.
+- Installed and configured hardware and software.
+- Performed preventive ICT maintenance and asset management.
+- Assisted in implementing data protection measures.
+
+**Key Achievements:**
+- Improved ICT service continuity and network reliability.
+- Strengthened cybersecurity posture.
+- Supported development of ICT governance frameworks.
+- Enhanced information accessibility through website updates.
+- Promoted digital security awareness.
+
+#### **Data Verse Africa** — *Volunteer Instructor & Curriculum Developer*  
+**July 2025 – Present**
+- Designed learning materials for Data Science.
+- Facilitated virtual training sessions.
+- Organized online workshops.
+- Created hands-on notebooks and resources.
+
+**Impact:**
+- Promoted data literacy across Africa.
+- Improved learner proficiency in Excel and Python.
+- Mentored beginners transitioning into tech.
+
+#### **Kenya National Examinations Council (KNEC)** — *Clerk*  
+**Nov 2024 – Dec 2024**, Pangani Girls High School
+
+#### **County Government of Nyeri (Weights & Measures Unit)** — *Attaché*  
+**May 2023 – Sept 2023**
+- Assisted in inspection and stamping of weighing equipment.
+- Performed IT troubleshooting and reporting.
+- Maintained office receipts database.
+- Communicated weekly routines to traders.
+- Promoted departmental services.
+
+**Impact:**
+- Contributed to annual revenue targets.
+- Enhanced customer relations and service delivery.
+(Add later)
+
+### **Skills**
+
+#### **Technical Skills**
+- Microsoft Office Suite (Excel, PowerPoint, Word, Access)
+- Statistical analysis: SPSS, R, Python, Stata
+- SQL & Amazon RDS
+- Data visualization: Tableau, Excel, PowerBI, SPSS, Stata
+- Data cleaning & manipulation
+- Cloud computing: AWS, Huawei Cloud
+- Python Libraries: NumPy, SymPy, Matplotlib, Seaborn
+- Machine Learning (Scikit-learn)
+- Streamlit for model deployment
+- Data Protection & Privacy Laws
+- Feature Engineering & Feature Selection
+- LaTeX Typesetting
+- NLP Fundamentals
+- Time Series Forecasting (ARMA, ARIMA)
+- Deep Learning (TensorFlow, ANN & CNN)
+- Network & Cybersecurity Basics (CCNA, CyberOps, DevNet)
+
+#### **Soft Skills**
+- Problem-solving
+- Communication
+- Teamwork & collaboration
+- Digital literacy
+- Python, R, SQL
+- Data Visualization
+- Machine Learning
+- UI/UX Design (Figma, Adobe XD)
+- Graphic Design (Canva, Photoshop)
+
+
+====================
+= _pages/projects.md
+====================
+---
+layout: single
+title: "Projects"
+permalink: /projects/
+---
+
+Welcome to my Projects section. Click any project to explore more.
+
+{% include gallery caption="UI/UX and Data Projects" %}
+
+
+====================
+= _projects/uiux_food_app.md
+====================
+---
+layout: single
+title: "Food App Design"
+excerpt: "A user-friendly food ordering mobile app design."
+project_type: "UI/UX Design"
+---
+
+### **Duration:** July 2022 - August 2023
+### **Tools Used:** Figma, Google Docs, Google Slides
+
+### **Key Features:**
+- Booking meals at favorite hotels/cafes
+- Personalized meal suggestions
+- Mobile-friendly design
+- Simplified payment
+- Online receipts & QR codes
+
+### **Project Link:**
+[Figma Prototype](https://www.figma.com/design/tcDT3DwnDZZxPjCAISANox/Untitled?m=auto&t=lqx4Bb08luxFyUpk-6)
+
+
+====================
+= _projects/uiux_happy_shoppers.md
+====================
+---
+layout: single
+title: "Happy Shoppers Ecommerce Website"
+excerpt: "Responsive e-commerce redesign."
+project_type: "UI/UX Design"
+---
+
+### **Duration:** October 2022 - January 2023
+### **Tools Used:** Adobe XD, Google Docs, Google Slides
+
+### **Key Features:**
+- Customer care chat function
+- Goods tracking
+- Easy checkout & payment
+- Fully responsive layout
+
+
+====================
+= _projects/uiux_mi_wallet.md
+====================
+---
+layout: single
+title: "Mi Wallet Design"
+excerpt: "A unified mobile wallet UI/UX design."
+project_type: "UI/UX Design"
+---
+
+### **Duration:** January 2023 - July 2023
+### **Tools Used:** Figma, Google Docs, Google Slides
+
+### **Key Features:**
+- Multi-bank loan application
+- Currency conversion
+- Investment feature for buying shares
+- Junior Account Platform
+- Transaction tracking
+- Receipt printing functionality
+
+### **Project Link:**
+[Figma Prototype](https://www.figma.com/design/R0dSXIe1Kd8WggSZ65EDh4/Untitled?m=auto&t=lqx4Bb08luxFyUpk-6)
+
+
+====================
+= _projects/uiux_mmu_cu.md
+====================
+---
+layout: single
+title: "MMU CU Website Design"
+excerpt: "A full church website experience design."
+project_type: "UI/UX Design"
+---
+
+### **Duration:** October 2023 - February 2024
+### **Tools Used:** Figma, Microsoft PowerPoint, Google Workspace
+
+### **Key Features:**
+- Church departments
+- Blogs platform
+- Online giving
+- Activities gallery
+- Events page with countdown timer
+- Leadership structure
+
+### **Project Link:**
+[Figma Prototype](https://www.figma.com/design/IaWjxYYXpwzte2T4EVRMHh/Untitled?m=auto&t=lqx4Bb08luxFyUpk-6)
+
+
+====================
+= _pages/notebooks.md
+====================
+---
+layout: single
+title: "Notebooks (Python & R)"
+permalink: /notebooks/
+---
+
+This section will display interactive notebooks.
+You can upload notebooks into `assets/notebooks/` and embed them using iframes or links.
+
+Example:
+```
+<a href="/assets/notebooks/your_notebook.html">Open Notebook</a>
+```
+
+
+====================
+= _pages/documents.md
+====================
+---
+layout: single
+title: "Documents"
+permalink: /documents/
+---
+
+You may upload CVs, Certificates, and Reports under `assets/docs/`.
+
+Example:
+```
+[Download CV](/assets/docs/Kelvin_CV.pdf)
+```
+
+====================
+= END OF FILE
+====================
