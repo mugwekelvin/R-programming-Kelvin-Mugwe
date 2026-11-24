@@ -1,0 +1,116 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Generating Functions
+
+## 1. MGFS in R
+
+Recall
+
+$$
+M_{x} (t) = \mathbb{E}(e^{tX})
+$$
+
+For discrete random variable
+
+$$
+M_{x}(t) = \sum_{x} e^{tX} P(X=x)
+$$
+
+For a continous random variable
+
+$$
+M_{x}(t) = \int e^{tX}P(X=x)
+$$
+
+### Binomial Distribution
+
+$$
+X \sim Bin(n,p)
+$$
+
+The theoretical MGF is
+
+$$
+M_{x}(t) = (1-p+pe^{t})^{n}
+$$
+
+```{r}
+mgf_binomial <- function(t, n, p) {
+  (1 - p + p * exp(t))^n
+}
+
+mgf_binomial(0.5, n = 10, p = 0.3)
+```
+
+Numerical Verification
+
+```{r}
+mgf_empirical <- function(t, x, prob) {
+  sum(exp(t * x) * prob)
+}
+
+x <- 0:10
+prob <- dbinom(x, size = 10, prob = 0.3)
+
+mgf_empirical(0.5, x, prob)
+```
+
+## Mgf of Poisson Distribution
+
+$$
+X \sim \text{Poisson}(\lambda) 
+$$
+
+$$
+M_{x} (t) = e^{\lambda(t - \lambda)} \qquad t \in[1, \infty]
+$$
+
+```{r}
+mgf_poisson <- function(t,lambda){
+  return(exp(lambda*(t - 1)))
+}
+
+mgf_poisson(0.2,lambda = 5)
+```
+
+Using MGFs to Obtain Moments
+
+```{r}
+library(numDeriv)
+
+M <- function(t) mgf_poisson(t,5)
+Mean_est <- grad(M,0)
+second_moment <- hessian(M,0)
+
+Mean_est
+second_moment
+```
+
+Implementing PGFs: We need to know the PGFs before using `numDeriv` as it helps us to compute the moments
+
+$$
+X \sim \text{Poisson}(\lambda)
+$$
+
+$$
+G(s) = e^{\lambda(s-1}
+$$
+
+```{r}
+lambda <- 4
+G <- function (s) {
+  exp(lambda*(s-1))
+}
+# mean
+means <- grad(G,1)
+means
+# Second Der
+second_der <- hessian(G,1)
+second_der
+# variance
+vars <- (second_der) + (means) - (means)^2
+vars
+```
